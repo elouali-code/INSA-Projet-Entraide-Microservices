@@ -17,8 +17,7 @@ public class Student {
     private String email;
     private String etablissement;
     private String filiere;
-    
-    // Mappage de la liste de compétences (nécessaire pour la recommandation)
+    private int nombreAvis;
     @ElementCollection
     @CollectionTable(name = "student_competences", joinColumns = @JoinColumn(name = "student_id"))
     private List<String> competences = new ArrayList<>();
@@ -26,12 +25,9 @@ public class Student {
     private String disponibilites; 
     private double noteMoyenneAvis;
 
-    // Constructeur sans argument (OBLIGATOIRE pour JPA)
     public Student() {}
     
-    // --- Getters et Setters (À AJOUTER ICI EN ENTIER) ---
     
-    // Exemple de getters/setters :
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -56,6 +52,9 @@ public class Student {
     public String getDisponibilites() { return disponibilites; }
     public void setDisponibilites(String disponibilites) { this.disponibilites = disponibilites; }
 
+    public int getNombreAvis() { return nombreAvis; }
+    public void setNombreAvis(int nombreAvis) { this.nombreAvis = nombreAvis; }
+    
     public double getNoteMoyenneAvis() { return noteMoyenneAvis; }
     public void setNoteMoyenneAvis(double noteMoyenneAvis) { this.noteMoyenneAvis = noteMoyenneAvis; }
 }

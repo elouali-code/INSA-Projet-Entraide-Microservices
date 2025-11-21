@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-// IMPORTS NÉCESSAIRES POUR CETTE CLASSE
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,16 +19,13 @@ public class UserServiceClient {
         this.webClient = webClientBuilder.baseUrl(userServiceUrl).build();
     }
 
-    // MÉTHODE 1 (Celle qui avait l'erreur)
-    // Appelle GET http://localhost:8080/api/users/search/by-competences?keywords=...
+    // GET Liste par compétences
     public List<StudentInfo> getStudentsByKeywords(List<String> keywords) {
-        // Convertit la liste [java, sql] en chaîne "java,sql"
         String keywordsString = keywords.stream().collect(Collectors.joining(","));
-        
         try {
              return webClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/api/users/search/by-competences")
+                            .path("/search/by-competences")
                             .queryParam("keywords", keywordsString)
                             .build())
                     .retrieve()
@@ -37,13 +33,12 @@ public class UserServiceClient {
                     .collectList()
                     .block(); 
         } catch (Exception e) {
-            System.err.println("Erreur lors de l'appel à l'UserService (getStudentsByKeywords): " + e.getMessage());
+            System.err.println("Erreur appel UserService: " + e.getMessage());
             return List.of(); 
         }
     }
     
-    // MÉTHODE 2 (Nécessaire pour la mise à jour des avis)
-    // GET /api/users/{id}
+    // GET Un étudiant
     public StudentInfo getStudentById(Long studentId) {
         return webClient.get()
                 .uri("/{id}", studentId)
@@ -52,8 +47,7 @@ public class UserServiceClient {
                 .block(); 
     }
 
-    // MÉTHODE 3 (Nécessaire pour la mise à jour des avis)
-    // PUT /api/users/{id}
+    // PUT Mise à jour étudiant
     public void updateStudent(Long studentId, StudentInfo student) {
         webClient.put()
                 .uri("/{id}", studentId)

@@ -6,9 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/requests")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*") 
 public class RequestController {
 
     private final RequestService requestService;
@@ -17,17 +19,41 @@ public class RequestController {
         this.requestService = requestService;
     }
 
-    // POST /api/requests : Créer une nouvelle demande
+    // POST : Créer
     @PostMapping
     public ResponseEntity<HelpRequest> createRequest(@RequestBody HelpRequest request) {
         try {
-             HelpRequest newRequest = requestService.createRequest(request);
-             return new ResponseEntity<>(newRequest, HttpStatus.CREATED);
+             return new ResponseEntity<>(requestService.createRequest(request), HttpStatus.CREATED);
         } catch (RuntimeException e) {
-             // Gérer les erreurs inter-service (ex: Étudiant introuvable)
              return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
     
-    // Ajoutez ici les endpoints GET pour lister les demandes
+    // GET : Lister Tout
+    @GetMapping
+    public List<HelpRequest> getAllRequests() {
+        return requestService.getAllRequests();
+    }
+
+    // PUT : Accepter
+    @PutMapping("/{id}/accept/{helperId}")
+    public ResponseEntity<HelpRequest> acceptRequest(@PathVariable Long id, @PathVariable Long helperId) {
+        try {
+            return ResponseEntity.ok(requestService.acceptRequest(id, helperId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // NOUVEL ENDPOINT : MATCHING INTELLIGENT
+    // URL : GET http://localhost:8081/api/requests/match?skills=java,sql
+    @GetMapping("/match")
+    public ResponseEntity<List<HelpRequest>> getMatchingRequests(@RequestParam List<String> skills) {
+        List<HelpRequest> matches = requestService.findMatches(skills);
+        
+        if (matches.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204 Si rien trouvé
+        }
+        return ResponseEntity.ok(matches);
+    }
 }

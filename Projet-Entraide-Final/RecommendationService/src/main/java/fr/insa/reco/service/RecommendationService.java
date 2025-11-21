@@ -1,9 +1,12 @@
 package fr.insa.reco.service;
 
 import fr.insa.reco.client.UserServiceClient;
+import fr.insa.reco.dto.ReviewRequest;
 import fr.insa.reco.dto.StudentInfo;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.DayOfWeek;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,14 +19,45 @@ public class RecommendationService {
         this.userServiceClient = userServiceClient;
     }
 
- // Dans RecommendationService.java
-
-    public List<StudentInfo> getRecommendedAids(List<String> keywords) {
+    public List<StudentInfo> getRecommendedAids(List<String> keywords, String dateString) {
+        // 1. Récupérer les étudiants compétents
         List<StudentInfo> students = userServiceClient.getStudentsByKeywords(keywords);
 
-        // LOGIQUE PROPRE : Si la note est >= 4.0 ou si l'étudiant est nouveau (note 0.0), incluez-le.
+        // 2. Calculer le Jour de la semaine à partir de la date (YYYY-MM-DD)
+        // Ex: "2025-11-24" -> DayOfWeek.MONDAY
+        LocalDate date = LocalDate.parse(dateString);
+        String dayName = date.getDayOfWeek().toString(); // "MONDAY", "TUESDAY"...
+
+        System.out.println("Recherche pour le jour : " + dayName);
+
+        // 3. FILTRAGE : On garde ceux qui ont ce jour dans leurs disponibilités
         return students.stream()
-                .filter(s -> s.getNoteMoyenneAvis() >= 4.0 || s.getNoteMoyenneAvis() == 0.0) 
+                .filter(s -> {
+                    if (s.getDisponibilites() == null) return false;
+                    return s.getDisponibilites().toUpperCase().contains(dayName);
+                })
                 .collect(Collectors.toList());
+    }
+
+    public void processReview(ReviewRequest review) {
+        Long helperId = review.getHelperId();
+        int newRating = review.getNewRating();
+
+        StudentInfo student = userServiceClient.getStudentById(helperId);
+        
+        double currentAvg = student.getNoteMoyenneAvis();
+        int count = student.getNombreAvis();
+
+        double newAvg;
+        if (count == 0) {
+            newAvg = newRating;
+        } else {
+            newAvg = ((currentAvg * count) + newRating) / (count + 1.0);
+        }
+        
+        student.setNoteMoyenneAvis(newAvg);
+        student.setNombreAvis(count + 1);
+
+        userServiceClient.updateStudent(helperId, student);
     }
 }

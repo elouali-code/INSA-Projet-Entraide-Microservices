@@ -38,8 +38,10 @@ public class UserController {
     public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student studentDetails) {
         return userService.findStudentById(id)
                 .map(student -> {
-                    student.setNom(studentDetails.getNom());
-                    student.setEmail(studentDetails.getEmail());
+                    student.setNoteMoyenneAvis(studentDetails.getNoteMoyenneAvis());
+                    student.setNombreAvis(studentDetails.getNombreAvis()); // N'oubliez pas ce champ !
+                 
+                    // SAUVEGARDE EN BDD
                     return ResponseEntity.ok(userService.saveStudent(student));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());

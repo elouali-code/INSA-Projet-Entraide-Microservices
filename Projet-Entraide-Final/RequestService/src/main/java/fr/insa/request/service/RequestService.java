@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class RequestService {
     
@@ -16,32 +19,47 @@ public class RequestService {
 
     public RequestService(RequestRepository requestRepository, WebClient.Builder webClientBuilder) {
         this.requestRepository = requestRepository;
-        // Initialisation du WebClient pour les appels inter-services
         this.webClient = webClientBuilder.baseUrl(userServiceUrl).build();
     }
 
+    // 1. Créer une demande (avec validation inter-service)
     public HelpRequest createRequest(HelpRequest request) {
-        
-        // 1. VALIDATION INTER-SERVICE : Vérifier si l'étudiant demandeur existe
-        // Le WebClient va appeler GET http://localhost:8080/api/users/{studentId}
         webClient.get()
                 .uri("/api/users/{id}", request.getStudentId())
                 .retrieve()
-                // CORRECTION DE LA SYNTAXE onStatus : gère le 404/4xx du UserService
-                .onStatus(status -> status.is4xxClientError(), clientResponse -> {
-                    // Renvoie une exception si l'étudiant n'est pas trouvé (404)
-                    return Mono.error(new RuntimeException("Erreur: Étudiant ID " + request.getStudentId() + " introuvable."));
-                })
+                .onStatus(status -> status.is4xxClientError(), clientResponse -> 
+                    Mono.error(new RuntimeException("Étudiant introuvable"))
+                )
                 .bodyToMono(Void.class)
-                .block(); // Bloque ici pour attendre la validation avant de continuer
+                .block(); 
         
-        
-        // 2. LOGIQUE MÉTIER : Initialisation et Persistance
         if (request.getStatut() == null) {
-             request.setStatut("attente");
+             request.setStatut("ATTENTE");
         }
-        
-        // 3. Persistance de la demande dans la BDD locale du RequestService
         return requestRepository.save(request);
+    }
+
+    // 2. Lister toutes les demandes
+    public List<HelpRequest> getAllRequests() {
+        return requestRepository.findAll();
+    }
+
+    // 3. Accepter une demande
+    public HelpRequest acceptRequest(Long requestId, Long helperId) {
+        Optional<HelpRequest> optionalRequest = requestRepository.findById(requestId);
+        if (optionalRequest.isPresent()) {
+            HelpRequest req = optionalRequest.get();
+            req.setStatut("EN_COURS");
+            req.setHelperId(helperId);
+            return requestRepository.save(req);
+        } else {
+            throw new RuntimeException("Demande introuvable.");
+        }
+    }
+
+    // 4. NOUVELLE MÉTHODE : MATCHING CÔTÉ SERVEUR
+    public List<HelpRequest> findMatches(List<String> skills) {
+        // Appelle la méthode magique du repository
+        return requestRepository.findDistinctByMotsClesIn(skills);
     }
 }
