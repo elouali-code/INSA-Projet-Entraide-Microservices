@@ -1,50 +1,14 @@
-l-ouali@insa-20672:~/Bureau$ mysql -h srv-bdens.insa-toulouse.fr --port=3306 -u projet_gei_068 -p
-Enter password: 
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 12727
-Server version: 5.7.42-0ubuntu0.18.04.1 (Ubuntu)
+mysql -h srv-bdens.insa-toulouse.fr --port=3306 -u projet_gei_068 -p
+Enter password: ------
 
-Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql> SET FOREIGN_KEY_CHECKS = 0;
-Query OK, 0 rows affected (0.01 sec)
-
-mysql> TRUNCATE TABLE student_competences;
-ERROR 1046 (3D000): No database selected
-mysql> TRUNCATE TABLE request_keywords;
-ERROR 1046 (3D000): No database selected
-mysql> TRUNCATE TABLE help_requests;
-ERROR 1046 (3D000): No database selected
-mysql> TRUNCATE TABLE students;
-ERROR 1046 (3D000): No database selected
 mysql> USE projet_gei_068;
-Reading table information for completion of table and column names
-You can turn off this feature to get a quicker startup with -A
 
-Database changed
 mysql> SET FOREIGN_KEY_CHECKS = 0;
-Query OK, 0 rows affected (0.00 sec)
-
 mysql> TRUNCATE TABLE students;
-Query OK, 0 rows affected (0.19 sec)
-
 mysql> TRUNCATE TABLE help_requests;
-Query OK, 0 rows affected (0.04 sec)
-
 mysql> TRUNCATE TABLE request_keywords;
-Query OK, 0 rows affected (0.04 sec)
-
 mysql> TRUNCATE TABLE student_competences;
-Query OK, 0 rows affected (0.04 sec)
-
 mysql> SET FOREIGN_KEY_CHECKS = 1;
-Query OK, 0 rows affected (0.00 sec)
 
 mysql> INSERT INTO students (id, nom, prenom, email, filiere, etablissement, note_moyenne_avis, nombre_avis, disponibilites) VALUES
     -> (1, 'Martin', 'Alice', 'alice@insa.fr', 'Info', 'INSA', 0.0, 0, 'MONDAY, WEDNESDAY'),
@@ -57,11 +21,7 @@ mysql> INSERT INTO students (id, nom, prenom, email, filiere, etablissement, not
     -> (8, 'Garcia', 'Hugo', 'hugo@insa.fr', 'Génie Physique', 'INSA', 0.0, 0, 'TUESDAY'),
     -> (9, 'David', 'Iris', 'iris@insa.fr', 'Info', 'INSA', 4.8, 4, 'WEDNESDAY'),
     -> (10, 'Bertrand', 'Jack', 'jack@insa.fr', 'Méca', 'INSA', 2.5, 2, 'FRIDAY');
-Query OK, 10 rows affected (0.02 sec)
-Records: 10  Duplicates: 0  Warnings: 0
 
-mysql> 
-mysql> -- Ajout des compétences pour ces étudiants
 mysql> INSERT INTO student_competences (student_id, competences) VALUES
     -> (1, 'java'), (1, 'spring'),
     -> (2, 'beton'), (2, 'autocad'),
@@ -73,10 +33,7 @@ mysql> INSERT INTO student_competences (student_id, competences) VALUES
     -> (8, 'electronique'), (8, 'arduino'),
     -> (9, 'react'), (9, 'javascript'),
     -> (10, 'meca'), (10, 'fluides');
-Query OK, 20 rows affected (0.02 sec)
-Records: 20  Duplicates: 0  Warnings: 0
 
-mysql> -- Insertion des demandes d'aide
 mysql> INSERT INTO help_requests (id, student_id, titre, description, statut, date_souhaitee, helper_id) VALUES
     -> (1, 2, 'Besoin aide Java', 'Problème avec Spring Boot', 'ATTENTE', '2025-11-24', NULL),
     -> (2, 1, 'Calcul Structure', 'Besoin aide RDM poutres', 'ATTENTE', '2025-11-25', NULL),
@@ -88,11 +45,7 @@ mysql> INSERT INTO help_requests (id, student_id, titre, description, statut, da
     -> (8, 8, 'Site Web React', 'Components et Props', 'ATTENTE', '2025-11-26', NULL),
     -> (9, 9, 'Thermodynamique', 'Cycle de Carnot', 'ATTENTE', '2025-11-27', NULL),
     -> (10, 10, 'Algèbre Linéaire', 'Matrices et déterminants', 'ATTENTE', '2025-11-28', NULL);
-Query OK, 10 rows affected (0.00 sec)
-Records: 10  Duplicates: 0  Warnings: 0
 
-mysql> 
-mysql> -- Ajout des mots-clés pour ces demandes
 mysql> INSERT INTO request_keywords (request_id, mots_cles) VALUES
     -> (1, 'java'), (1, 'spring'),
     -> (2, 'beton'), (2, 'structure'),
@@ -104,71 +57,6 @@ mysql> INSERT INTO request_keywords (request_id, mots_cles) VALUES
     -> (8, 'react'), (8, 'js'),
     -> (9, 'physique'), (9, 'thermo'),
     -> (10, 'maths'), (10, 'algebre');
-Query OK, 20 rows affected (0.01 sec)
-Records: 20  Duplicates: 0  Warnings: 0
-
-mysql> select * from Students
-    -> ;
-ERROR 1146 (42S02): Table 'projet_gei_068.Students' doesn't exist
-mysql> select * from students
-    -> ;
-+----+-------------------+-----------------+---------------+-----------------+----------+-------------------+---------+-------------+
-| id | disponibilites    | email           | etablissement | filiere         | nom      | note_moyenne_avis | prenom  | nombre_avis |
-+----+-------------------+-----------------+---------------+-----------------+----------+-------------------+---------+-------------+
-|  1 | MONDAY, WEDNESDAY | alice@insa.fr   | INSA          | Info            | Martin   |                 0 | Alice   |           0 |
-|  2 | TUESDAY, THURSDAY | bob@insa.fr     | INSA          | Génie Civil     | Dupont   |                 0 | Bob     |           0 |
-|  3 | FRIDAY            | charlie@insa.fr | INSA          | Méca            | Leroy    |               4.5 | Charlie |           2 |
-|  4 | MONDAY, TUESDAY   | david@insa.fr   | INSA          | Génie Physique  | Moreau   |                 3 | David   |           1 |
-|  5 | WEDNESDAY, FRIDAY | eve@insa.fr     | INSA          | Maths           | Simon    |                 5 | Eve     |           5 |
-|  6 | THURSDAY          | frank@insa.fr   | INSA          | Info            | Laurent  |                 0 | Frank   |           0 |
-|  7 | MONDAY            | grace@insa.fr   | INSA          | Génie Civil     | Michel   |                 4 | Grace   |           3 |
-|  8 | TUESDAY           | hugo@insa.fr    | INSA          | Génie Physique  | Garcia   |                 0 | Hugo    |           0 |
-|  9 | WEDNESDAY         | iris@insa.fr    | INSA          | Info            | David    |               4.8 | Iris    |           4 |
-| 10 | FRIDAY            | jack@insa.fr    | INSA          | Méca            | Bertrand |               2.5 | Jack    |           2 |
-+----+-------------------+-----------------+---------------+-----------------+----------+-------------------+---------+-------------+
-10 rows in set (0.01 sec)
-
-mysql> select * from request_
-request_id                   request_keywords             request_keywords.mots_cles   request_keywords.request_id 
-mysql> select * from help
-help                          help_requests.date_souhaitee  help_requests.helper_id       help_requests.statut          help_requests.titre          
-help_requests                 help_requests.description     help_requests.id              help_requests.student_id      helper_id                    
-mysql> select * from help_requests
-    -> ;
-+----+----------------+----------------------------+----------+------------+--------------------+-----------+
-| id | date_souhaitee | description                | statut   | student_id | titre              | helper_id |
-+----+----------------+----------------------------+----------+------------+--------------------+-----------+
-|  1 | 2025-11-24     | Problème avec Spring Boot  | ATTENTE  |          2 | Besoin aide Java   |      NULL |
-|  2 | 2025-11-25     | Besoin aide RDM poutres    | ATTENTE  |          1 | Calcul Structure   |      NULL |
-|  3 | 2025-11-26     | Intégrales doubles         | EN_COURS |          4 | Exercice Maths     |         5 |
-|  4 | 2025-11-27     | HTML/CSS responsive        | ATTENTE  |          3 | Projet Web         |      NULL |
-|  5 | 2025-11-28     | Installation Ubuntu        | ATTENTE  |          5 | Config Linux       |      NULL |
-|  6 | 2025-11-24     | Lois de Newton             | ATTENTE  |          6 | Aide Physique      |      NULL |
-|  7 | 2025-11-25     | Pointeurs et mémoire       | EN_COURS |          7 | Débuggage C++      |         1 |
-|  8 | 2025-11-26     | Components et Props        | ATTENTE  |          8 | Site Web React     |      NULL |
-|  9 | 2025-11-27     | Cycle de Carnot            | ATTENTE  |          9 | Thermodynamique    |      NULL |
-| 10 | 2025-11-28     | Matrices et déterminants   | ATTENTE  |         10 | Algèbre Linéaire   |      NULL |
-+----+----------------+----------------------------+----------+------------+--------------------+-----------+
-10 rows in set (0.00 sec)
-
-mysql> select * from help_requests
-    -> ;
-+----+----------------+---------------------------------+----------+------------+--------------------+-----------+
-| id | date_souhaitee | description                     | statut   | student_id | titre              | helper_id |
-+----+----------------+---------------------------------+----------+------------+--------------------+-----------+
-|  1 | 2025-11-24     | Problème avec Spring Boot       | ATTENTE  |          2 | Besoin aide Java   |      NULL |
-|  2 | 2025-11-25     | Besoin aide RDM poutres         | ATTENTE  |          1 | Calcul Structure   |      NULL |
-|  3 | 2025-11-26     | Intégrales doubles              | EN_COURS |          4 | Exercice Maths     |         5 |
-|  4 | 2025-11-27     | HTML/CSS responsive             | ATTENTE  |          3 | Projet Web         |      NULL |
-|  5 | 2025-11-28     | Installation Ubuntu             | ATTENTE  |          5 | Config Linux       |      NULL |
-|  6 | 2025-11-24     | Lois de Newton                  | ATTENTE  |          6 | Aide Physique      |      NULL |
-|  7 | 2025-11-25     | Pointeurs et mémoire            | EN_COURS |          7 | Débuggage C++      |         1 |
-|  8 | 2025-11-26     | Components et Props             | ATTENTE  |          8 | Site Web React     |      NULL |
-|  9 | 2025-11-27     | Cycle de Carnot                 | ATTENTE  |          9 | Thermodynamique    |      NULL |
-| 10 | 2025-11-28     | Matrices et déterminants        | ATTENTE  |         10 | Algèbre Linéaire   |      NULL |
-| 11 | 2025-11-26     | J'ai besoin de cours de java !! | ATTENTE  |          2 | test demande java  |      NULL |
-+----+----------------+---------------------------------+----------+------------+--------------------+-----------+
-11 rows in set (0.01 sec)
 
 mysql> select * from students ;
 +----+-------------------+--------------------+---------------+-----------------+----------+-------------------+---------+-------------+
@@ -188,7 +76,6 @@ mysql> select * from students ;
 +----+-------------------+--------------------+---------------+-----------------+----------+-------------------+---------+-------------+
 11 rows in set (0.00 sec)
 
-mysql> ^C
 mysql> select * from help_requests ; 
 +----+----------------+---------------------------------+----------+------------+--------------------+-----------+
 | id | date_souhaitee | description                     | statut   | student_id | titre              | helper_id |
