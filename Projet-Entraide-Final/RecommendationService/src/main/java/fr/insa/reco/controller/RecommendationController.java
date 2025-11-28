@@ -18,12 +18,11 @@ public class RecommendationController {
         this.recommendationService = recommendationService;
     }
 
-    // GET Mmis à jour : Ajout de @RequestParam String targetDate
-    // URL : /api/recommendations/search?keywords=java&targetDate=2025-11-24
+    // GET Mmis à jour 
     @GetMapping("/api/recommendations/search") 
     public ResponseEntity<List<StudentInfo>> getRecommendations(
             @RequestParam List<String> keywords,
-            @RequestParam String targetDate) { // Paramètre obligatoire
+            @RequestParam String targetDate) { 
         
         try {
             List<StudentInfo> recommendedAids = recommendationService.getRecommendedAids(keywords, targetDate);
@@ -34,7 +33,6 @@ public class RecommendationController {
             return ResponseEntity.ok(recommendedAids);
             
         } catch (Exception e) {
-            // Erreur si le format de date est mauvais
             System.err.println("Erreur date : " + e.getMessage());
             return ResponseEntity.badRequest().build();
         }

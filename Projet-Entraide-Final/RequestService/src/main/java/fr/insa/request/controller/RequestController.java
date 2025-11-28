@@ -45,14 +45,12 @@ public class RequestController {
         }
     }
 
-    // NOUVEL ENDPOINT : MATCHING INTELLIGENT
-    // URL : GET http://localhost:8081/api/requests/match?skills=java,sql
     @GetMapping("/match")
     public ResponseEntity<List<HelpRequest>> getMatchingRequests(@RequestParam List<String> skills) {
         List<HelpRequest> matches = requestService.findMatches(skills);
         
         if (matches.isEmpty()) {
-            return ResponseEntity.noContent().build(); // 204 Si rien trouvé
+            return ResponseEntity.noContent().build(); 
         }
         return ResponseEntity.ok(matches);
     }

@@ -57,7 +57,6 @@ public class RequestService {
         }
     }
 
-    // 4. NOUVELLE MÉTHODE : MATCHING CÔTÉ SERVEUR
     public List<HelpRequest> findMatches(List<String> skills) {
         // Appelle la méthode magique du repository
         return requestRepository.findDistinctByMotsClesIn(skills);

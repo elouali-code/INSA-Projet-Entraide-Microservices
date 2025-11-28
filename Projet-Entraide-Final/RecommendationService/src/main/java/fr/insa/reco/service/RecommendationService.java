@@ -24,7 +24,7 @@ public class RecommendationService {
         List<StudentInfo> students = userServiceClient.getStudentsByKeywords(keywords);
 
         // 2. Calculer le Jour de la semaine à partir de la date (YYYY-MM-DD)
-        // Ex: "2025-11-24" -> DayOfWeek.MONDAY
+    
         LocalDate date = LocalDate.parse(dateString);
         String dayName = date.getDayOfWeek().toString(); // "MONDAY", "TUESDAY"...
 

@@ -21,7 +21,6 @@ public class HelpRequest {
     @CollectionTable(name = "request_keywords", joinColumns = @JoinColumn(name = "request_id"))
     private List<String> motsCles = new ArrayList<>();
     
-    // CHANGEMENT ICI : Date seule (Année-Mois-Jour)
     private LocalDate dateSouhaitee; 
     
     private String statut; 
