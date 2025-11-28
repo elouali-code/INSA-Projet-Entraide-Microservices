@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INSA Entraide</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f5f5f5; 
+            margin: 0; 
+        }
+        
+        header { 
+            background-color: #E0001A; 
+            color: white; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        header h1 { 
+            margin: 0; 
+            font-size: 22px;
+        }
+
+        .container { 
+            max-width: 1100px; 
+            margin: 20px auto; 
+            display: grid; 
+            grid-template-columns: 280px 1fr; 
+            gap: 20px; 
+            padding: 0 20px; 
+        }
+        
+        #landing-page { 
+            display: flex; 
+            gap: 30px; 
+            padding: 50px 20px; 
+            max-width: 900px; 
+            margin: 0 auto; 
+        }
+        
+        .auth-box { 
+            background: white; 
+            padding: 25px; 
+            border: 1px solid #ddd;
+            flex: 1;
+        }
+        
+        .auth-box h2 { 
+            color: #E0001A; 
+            margin-top: 0; 
+            border-bottom: 2px solid #E0001A;
+            padding-bottom: 10px;
+        }
+
+        .card { 
+            background: white; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            border: 1px solid #ddd;
+        }
+        
+        .card h3 { 
+            color: #E0001A; 
+            margin-top: 0; 
+            padding-bottom: 10px; 
+            border-bottom: 1px solid #eee;
+        }
+
+        form { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+        }
+        
+        label { 
+            font-weight: bold; 
+            font-size: 14px; 
+        }
+        
+        input, textarea, select { 
+            padding: 8px; 
+            border: 1px solid #ccc; 
+            width: 100%; 
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            min-height: 80px;
+        }
+
+        .days-checkboxes { 
+            display: flex; 
+            gap: 10px; 
+        }
+        
+        .days-checkboxes label { 
+            background: #f0f0f0; 
+            padding: 6px 12px; 
+            cursor: pointer;
+            font-weight: normal;
+        }
+        
+        .days-checkboxes input { 
+            width: auto; 
+            margin-right: 5px;
+        }
+
+        .btn { 
+            padding: 10px 20px; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: white;
+        }
+        
+        .btn-primary { 
+            background-color: #E0001A; 
+        }
+        
+        .btn-success { 
+            background-color: #28a745; 
+        }
+        
+        .btn-warning { 
+            background-color: #f39c12; 
+        }
+        
+        .btn-danger { 
+            background-color: #333; 
+            font-size: 13px; 
+            padding: 8px 15px;
+        }
+
+        .profile-header { 
+            text-align: center; 
+        }
+        
+        .avatar { 
+            width: 80px; 
+            height: 80px; 
+            background: #E0001A; 
+            color: white; 
+            border-radius: 50%; 
+            margin: 0 auto 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 35px;
+        }
+        
+        .rating-badge { 
+            background: #333; 
+            color: white; 
+            padding: 5px 12px; 
+            display: inline-block; 
+            margin-top: 10px;
+        }
+        
+        .results-list li, .item-card { 
+            background: #f9f9f9; 
+            border-left: 3px solid #E0001A; 
+            padding: 15px; 
+            margin-bottom: 10px; 
+            list-style: none;
+        }
+        
+        .status-badge { 
+            display: inline-block; 
+            padding: 4px 8px; 
+            font-size: 12px; 
+            font-weight: bold;
+        }
+        
+        .status-wait { 
+            background: #fff3cd; 
+            color: #856404; 
+        }
+        
+        .status-active { 
+            background: #d4edda; 
+            color: #155724; 
+        }
+
+        #global-message { 
+            position: fixed; 
+            top: 80px; 
+            right: 20px; 
+            padding: 15px 25px; 
+            display: none; 
+            z-index: 1000; 
+            color: white;
+        }
+        
+        .msg-success { 
+            background-color: #28a745; 
+        }
+        
+        .msg-error { 
+            background-color: #E0001A; 
+        }
+
+        #ratingModal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.5); 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 200;
+        }
+        
+        .modal-content { 
+            background: white; 
+            padding: 30px; 
+            width: 350px; 
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fas fa-graduation-cap"></i> INSA Entraide</h1>
+        <div id="user-nav" style="display:none;">
+            <span style="margin-right: 15px;">Bonjour, <strong id="nav-username"></strong></span>
+            <button class="btn btn-danger" onclick="logout()">Déconnexion</button>
+        </div>
+    </header>
+
+    <div id="global-message"></div>
+
+    <!-- LOGIN & INSCRIPTION -->
+    <div id="landing-page">
+        <div class="auth-box">
+            <h2>Connexion</h2>
+            <form id="loginForm">
+                <label>Votre ID Étudiant</label>
+                <input type="number" id="loginId" placeholder="Ex: 1" required>
+                <button type="submit" class="btn btn-primary">Se connecter</button>
+            </form>
+        </div>
+
+        <div class="auth-box">
+            <h2>Inscription</h2>
+            <form id="registerForm">
+                <label>Nom</label>
+                <input type="text" id="regNom" required>
+                
+                <label>Prénom</label>
+                <input type="text" id="regPrenom" required>
+                
+                <label>Email INSA</label>
+                <input type="email" id="regEmail" required>
+                
+                <label>Filière</label>
+                <input type="text" id="regFiliere" placeholder="Ex: Informatique, GC, GM..." required>
+                
+                <label>Compétences (séparées par virgules)</label>
+                <input type="text" id="regCompetences" placeholder="java, sql, maths, physique" required>
+                
+                <label>Disponibilités :</label>
+                <div class="days-checkboxes">
+                    <label><input type="checkbox" value="MONDAY"> Lun</label>
+                    <label><input type="checkbox" value="TUESDAY"> Mar</label>
+                    <label><input type="checkbox" value="WEDNESDAY"> Mer</label>
+                    <label><input type="checkbox" value="THURSDAY"> Jeu</label>
+                    <label><input type="checkbox" value="FRIDAY"> Ven</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Créer mon compte</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" style="display: none;">
+        
+        <aside>
+            <div class="card profile-header">
+                <div class="avatar"><i class="fas fa-user"></i></div>
+                <h3 id="dashName">...</h3>
+                <p id="dashFiliere" style="color:#666; font-style:italic;">-</p>
+                <div class="rating-badge">★ <span id="dashNote">0.0</span> / 5</div>
+                <p style="font-size:12px; color:#888; margin-top:5px;">(<span id="dashNbAvis">0</span> avis)</p>
+                
+                <div style="text-align:left; margin-top:20px; border-top:1px solid #eee; padding-top:15px;">
+                    <strong style="color:#E0001A;">Compétences</strong>
+                    <p id="dashSkills" style="font-size: 14px; color: #333;">-</p>
+                    
+                    <strong style="color:#E0001A;">Disponibilités</strong>
+                    <p id="dashDispos" style="font-size: 14px; color: #333;">-</p>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            
+            <section class="card">
+                <h3><i class="fas fa-search"></i> Rechercher un Tuteur</h3>
+                <form id="searchForm">
+                    <label>Sujet / Compétence</label>
+                    <input type="text" id="searchKeywords" placeholder="Ex: java" required>
+                    
+                    <label>Date du besoin</label>
+                    <input type="date" id="searchDate" required>
+                    
+                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                </form>
+                <div id="searchResults"></div>
+            </section>
+
+            <section class="card">
+                <h3><i class="fas fa-plus-circle"></i> Publier une Demande</h3>
+                <form id="publishForm">
+                    <label>Titre</label>
+                    <input type="text" id="reqTitle" required>
+                    
+                    <label>Date souhaitée</label>
+                    <input type="date" id="reqDate" required>
+                    
+                    <label>Mots-clés</label>
+                    <input type="text" id="reqKeywords" required>
+                    
+                    <label>Description</label>
+                    <textarea id="reqDesc"></textarea>
+                    
+                    <button type="submit" class="btn btn-primary">Publier</button>
+                </form>
+            </section>
+
+            <section class="card">
+                <h3><i class="fas fa-list"></i> Mes demandes</h3>
+                <div id="myRequestsContainer">Chargement...</div>
+            </section>
+
+            <section class="card">
+                <h3><i class="fas fa-hands-helping"></i> Missions suggérées</h3>
+                <div id="missionsContainer">Chargement...</div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL NOTATION -->
+    <div id="ratingModal">
+        <div class="modal-content">
+            <h3 style="color:#E0001A;">Noter l'étudiant</h3>
+            <p>Évaluez l'étudiant ID <span id="modalHelperId"></span></p>
+            
+            <form id="ratingForm">
+                <input type="hidden" id="helperId">
+                <input type="number" id="modalRating" min="1" max="5" placeholder="Note (1-5)" style="font-size:1.2em; text-align:center; width:80%; margin:10px auto;">
+                
+                <div style="margin-top:15px;">
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal()">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
